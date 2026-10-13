@@ -35,7 +35,12 @@ async function fetchMock(request){
  let body=fs.readFileSync(path.join(ROOT,relative));
  if(relative==='assets.json'&&brokenManifest)body=Buffer.from(JSON.stringify({...assets,version:'failed-install'}));
  const type=relative.endsWith('.html')?'text/html':relative.endsWith('.json')?'application/json':relative.endsWith('.mp3')?'audio/mpeg':'application/octet-stream';
- return new Response(body,{status:200,headers:{'Content-Type':type}});
+ const response=new Response(body,{status:200,headers:{'Content-Type':type}});
+ if(relative.endsWith('.html')){
+  Object.defineProperty(response,'redirected',{value:true});
+  Object.defineProperty(response,'url',{value:new URL(href).href.replace(/\/index\.html$/,'/').replace(/\.html$/,'')});
+ }
+ return response;
 }
 const sandbox={self,caches,fetch:fetchMock,URL,Response,Request,Headers,console};vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(ROOT,'sw.js'),'utf8'),sandbox);
@@ -48,6 +53,8 @@ async function request(file,headers={}){
  const meta=await caches.open('a2-ipad-metadata-v1');assert.equal((await (await meta.match(new URL('assets.json',BASE).href)).json()).version,assets.version);
  offline=true;
  for(const d of assets.days){const r=await request(d.page);assert.equal(r.status,200);assert((await r.text()).includes('id="deck"'));}
+ assert.equal((await request('html/')).status,200,'clean lesson index works offline');
+ assert.equal((await request('html/day30')).status,200,'clean lesson URLs work offline');
  assert.equal((await request('')).status,200,'scope root opens dashboard offline');
  assert.equal((await request('index.html?source=homescreen')).status,200,'home query does not break cache lookup');
  const a=assets.days[0].assets.find(a=>a.kind==='audio');

@@ -6,9 +6,12 @@ const ROOT=new URL('./',self.registration.scope);
 const MANIFEST_URL=new URL('assets.json',ROOT).href;
 let manifestPromise;
 function localURL(path){return new URL(path,ROOT).href;}
+function canonicalHTML(pathname){return pathname.replace(/\/index\.html$/,'/').replace(/\.html$/,'');}
 async function verifiedFetch(url){
   const response=await fetch(url,{credentials:'same-origin',cache:'no-cache'});
-  if(!response.ok||response.redirected||(response.url&&new URL(response.url).origin!==ROOT.origin))throw new Error('Course file unavailable. Reconnect and sign in, then try again.');
+  const expected=new URL(url),final=response.url?new URL(response.url):expected;
+  const cleanHTML=expected.pathname.endsWith('.html')&&final.pathname===canonicalHTML(expected.pathname);
+  if(!response.ok||(response.redirected&&!cleanHTML)||final.origin!==ROOT.origin)throw new Error('Course file unavailable. Reconnect and sign in, then try again.');
   const pathname=new URL(url).pathname,type=response.headers.get('Content-Type')||'';
   if(!pathname.endsWith('.html')&&type.includes('text/html'))throw new Error('Sign-in page returned instead of a course file.');
   return response;
@@ -26,7 +29,9 @@ self.addEventListener('install',event=>event.waitUntil((async()=>{
   if(!data.version||data.days?.length!==30||!Array.isArray(data.shell))throw new Error('Invalid course manifest.');
   const shell=await caches.open(SHELL_PREFIX+data.version);
   // A failed or interrupted install never promotes an incomplete lesson cache.
-  for(const asset of data.shell)await shell.put(localURL(asset.url),await verifiedFetch(localURL(asset.url)));
+  for(let start=0;start<data.shell.length;start+=4){
+    await Promise.all(data.shell.slice(start,start+4).map(async asset=>shell.put(localURL(asset.url),await verifiedFetch(localURL(asset.url)))));
+  }
   await shell.put(MANIFEST_URL,response.clone());
   const meta=await caches.open(META);await meta.put(MANIFEST_URL,response);
   manifestPromise=Promise.resolve(data);
@@ -53,7 +58,10 @@ async function handleRequest(request){
   const url=new URL(request.url);
   if(url.pathname===ROOT.pathname)url.pathname+='index.html';
   const data=await manifest();
-  const shellAsset=data.shell.find(a=>new URL(a.url,ROOT).pathname===url.pathname);
+  const shellAsset=data.shell.find(a=>{
+    const pathname=new URL(a.url,ROOT).pathname;
+    return pathname===url.pathname||(pathname.endsWith('.html')&&canonicalHTML(pathname)===url.pathname);
+  });
   if(shellAsset||url.pathname===new URL(MANIFEST_URL).pathname){
     const shell=await caches.open(SHELL_PREFIX+data.version),key=shellAsset?localURL(shellAsset.url):MANIFEST_URL;
     const saved=await shell.match(key);
