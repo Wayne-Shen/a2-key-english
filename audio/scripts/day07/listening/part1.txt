@@ -1,0 +1,23 @@
+One. What does the girl buy?
+Boy: Do you want a book or a toy?
+Girl: I have enough books. I need a new wallet. This blue one is cheap. I will buy it.
+
+Two. Where do they meet?
+Girl: Shall we meet at the supermarket?
+Boy: Let’s meet outside the bookshop instead. It is beside the market.
+Girl: All right, the bookshop.
+
+Three. How much does the bag cost now?
+Assistant: This bag usually costs eight pounds. Today it is half-price.
+Girl: So that is four pounds?
+Assistant: Yes.
+
+Four. Which size does the boy choose?
+Assistant: This is a small shirt.
+Boy: It is too short. Can I try the medium one?
+Assistant: Here you are.
+Boy: This fits. I do not need the large one.
+
+Five. What does the girl need from her dad?
+Girl: I have my purse and shopping bag. Can you give me the receipt? I need it to return the coat.
+Dad: Here it is.
