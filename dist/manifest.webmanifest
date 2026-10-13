@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "A2 Key · 30-Day English Course",
+  "short_name": "A2 Key",
+  "description": "30 days of English lessons, vocabulary, listening and news practice, with offline downloads.",
+  "lang": "en",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fc",
+  "theme_color": "#3455dc",
+  "icons": [
+    {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
