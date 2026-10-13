@@ -8,7 +8,9 @@
   function url(path){return new URL(path,ROOT).href;}
   function connection(){$('connection').textContent=navigator.onLine?'Online · 在线':'Offline · 离线';}
   async function verify(response,asset){
-    if(!response.ok||response.redirected||(response.url&&new URL(response.url).origin!==ROOT.origin))throw new Error('Download unavailable. Reconnect and sign in, then retry.');
+    const expected=new URL(url(asset.url)),final=response.url?new URL(response.url):expected;
+    const cleanHTML=asset.kind==='shell'&&expected.pathname.endsWith('.html')&&final.pathname===expected.pathname.replace(/\/index\.html$/,'/').replace(/\.html$/,'');
+    if(!response.ok||(response.redirected&&!cleanHTML)||final.origin!==ROOT.origin)throw new Error('Download unavailable. Reconnect and sign in, then retry.');
     const type=response.headers.get('Content-Type')||'';
     if(type.includes('text/html')&&!(asset.kind==='shell'&&asset.url.endsWith('.html')))throw new Error('Sign in online, then resume the download.');
     const body=await response.clone().arrayBuffer();
