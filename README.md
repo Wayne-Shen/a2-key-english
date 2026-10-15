@@ -33,13 +33,15 @@ Validation: all 30 copied decks passed the original course regression harness (2
 
 ## GitHub repository and Pages
 
-Private repository: https://github.com/Wayne-Shen/a2-key-english
+Public repository: https://github.com/Wayne-Shen/a2-key-english
 
-Status (2026-10-15): the private repository is uploaded and verified. GitHub Pages is disabled: the current GitHub plan does not support Pages for this private repository, and hosting was deferred at the owner's request.
+GitHub Pages: https://wayne-shen.github.io/a2-key-english/
 
-The complete learner-facing website is in `dist/`. The prepared `gh-pages` branch contains only those files at its root, including all 30 lessons, 330 MP3s, transcripts, and offline support. Credentials and course production files are outside this checkout. `.nojekyll` keeps GitHub Pages from processing the static files with Jekyll if hosting is enabled later.
+Status (2026-10-15): the repository is public at the owner's request. GitHub Pages is enabled with HTTPS, publishing the root of `gh-pages`.
 
-After committing updates, validate and upload both branches from this checkout (hosting remains disabled):
+The complete learner-facing website is in `dist/`. The `gh-pages` branch contains only those files at its root, including all 30 lessons, 330 MP3s, transcripts, and offline support. Credentials and course production files are outside this checkout. `.nojekyll` keeps GitHub Pages from processing the static files with Jekyll.
+
+After committing updates, validate and publish from this checkout:
 
 ```sh
 node scripts/test-pwa.cjs
@@ -48,6 +50,6 @@ git push origin main
 git subtree push --prefix=dist origin gh-pages
 ```
 
-In repository **Settings → Pages**, select **Deploy from a branch**, `gh-pages`, and `/ (root)`. GitHub Pages hosting from a private repository requires an eligible paid GitHub plan. The repository stays private; the published lesson website is public. The expected address after a successful deployment is https://wayne-shen.github.io/a2-key-english/.
+Repository **Settings → Pages** is configured with **Deploy from a branch**, `gh-pages`, and `/ (root)`. Pushing `main` saves source and documentation changes; pushing `gh-pages` deploys the updated website. Both the repository and published lessons are public. Hosting from a private repository would require an eligible paid GitHub plan.
 
 The existing private ChatGPT Site is a separate deployment and retains its own address and access settings.
