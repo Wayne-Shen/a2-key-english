@@ -75,7 +75,8 @@ for day in range(1,31):
     assert len(audio)==11,(day,len(audio))
     assets=[asset(p,'audio') for p in audio]+[asset(p,'transcript') for p in scripts]
     days.append({'day':day,'title':data['title'],'page':'html/index.html' if day==1 else f'html/{tag}.html','assets':assets,'bytes':sum(a['bytes'] for a in assets)})
-shell=[asset(p) for p in sorted(DIST.rglob('*')) if p.is_file() and 'audio' not in p.relative_to(DIST).parts and p.name not in ('sw.js','assets.json','_headers')]
+# Finder files and hosting markers are not learner assets and may not be published.
+shell=[asset(p) for p in sorted(DIST.rglob('*')) if p.is_file() and 'audio' not in p.relative_to(DIST).parts and not any(part.startswith('.') for part in p.relative_to(DIST).parts) and p.name not in ('sw.js','assets.json','_headers')]
 worker=(DIST/'sw.js').read_text()
 worker,stamps=re.subn(r"const BUILD_VERSION='[a-f0-9]+';", "const BUILD_VERSION='__BUILD_VERSION__';", worker)
 assert stamps==1, 'Missing service-worker build stamp'

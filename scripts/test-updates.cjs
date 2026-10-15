@@ -1,6 +1,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const ROOT=path.resolve(__dirname,'../dist');
 const manifest=JSON.parse(fs.readFileSync(path.join(ROOT,'assets.json'),'utf8'));
+assert(!manifest.shell.some(asset=>asset.url.split('/').some(part=>part.startsWith('.'))),'local hidden files and hosting markers must not block a published offline install');
 assert(fs.readFileSync(path.join(ROOT,'sw.js'),'utf8').includes(`const BUILD_VERSION='${manifest.version}';`),'the worker must change with every shell version');
 async function scenario(controlled){
  const ids=new Map(),events={},workerEvents={};let reloads=0,checks=0,now=100000;
