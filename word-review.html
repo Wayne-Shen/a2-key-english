@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#3455dc"><title>我的生词本 · A2 Key</title>
+  <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="pwa.css"><link rel="stylesheet" href="word-review.css">
+  <script src="register.js" defer></script><script src="word-catalog.js" defer></script><script src="word-review.js" defer></script>
+</head>
+<body class="word-review-page">
+<header><a class="brand" href="index.html"><img src="icons/icon-192.png" width="44" height="44" alt="">A2 Key <small>Little steps. Big progress.</small></a><a class="back-to-course" href="index.html">← 返回课程首页</a></header>
+<main id="word-review">
+  <section class="review-hero"><div><p class="eyebrow">MY WORD COLLECTION · 一点点，变熟练</p><h1>我的生词本</h1><p>先回忆意思，再看中文。读一遍例句，用自己的话说一说。</p></div><div class="review-total"><strong id="word-count">0</strong><span>个单词待复习</span></div></section>
+  <div class="review-tools"><label for="word-search">查找单词<input id="word-search" type="search" placeholder="搜索英文或中文" autocomplete="off"></label><label for="word-day">学习日期<select id="word-day"><option value="">全部课程</option></select></label></div>
+  <p id="word-results" class="review-status" role="status"></p><p id="word-notice" class="review-status" role="status" aria-live="polite"></p>
+  <section id="word-list" class="review-grid" aria-label="待复习单词"></section>
+  <section id="word-empty" class="review-empty" hidden><span aria-hidden="true">☆</span><h2 id="word-empty-title"></h2><p id="word-empty-hint"></p><a class="primary link-button" href="html/index.html">去学习，收集生词 →</a></section>
+  <noscript><p>请启用 JavaScript 来查看和管理生词本。</p></noscript>
+</main>
+<footer>标记自动保存在当前浏览器 · 支持离线复习 · 清除网站数据会删除标记</footer>
+</body>
+</html>

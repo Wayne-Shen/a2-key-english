@@ -5,6 +5,8 @@
   <meta name="theme-color" content="#f5f7ff"><title>A2 Key · Day 21</title>
   <link rel="stylesheet" href="styles.css">
 <link rel="manifest" href="../manifest.webmanifest">
+<link rel="stylesheet" href="../word-review.css">
+<script src="../word-review.js" defer></script>
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -35,10 +37,10 @@
     <div class="lesson-heading"><span class="day-badge" aria-hidden="true"><small>DAY</small>21</span><div><p class="eyebrow">A LITTLE PRACTICE, EVERY DAY</p><h1 id="lessonTitle"></h1></div></div>
     <div class="hero-meta"><div class="hero-chips"><span id="wordCount"></span><span id="grammarBadge"></span><span id="topicBadge"></span></div><details class="goals"><summary lang="zh-CN">今天学什么？ <span aria-hidden="true">↗</span></summary><p id="lessonGoal"></p></details></div>
   </section>
-  <div class="deck-toolbar"><label class="section-select"><span lang="zh-CN">练习内容</span><select id="sectionPicker" aria-label="Choose a practice section"></select></label><span id="slideGroup" class="muted"></span><span class="shortcut"><kbd>←</kbd><kbd>→</kbd><span lang="zh-CN">也可以用方向键翻页</span></span></div>
+  <div class="deck-toolbar"><label class="section-select"><span lang="zh-CN">练习内容</span><select id="sectionPicker" aria-label="Choose a practice section"></select></label><a class="word-review-link" data-word-review-link href="../word-review.html" lang="zh-CN">我的生词本</a><span id="slideGroup" class="muted"></span><span class="shortcut"><kbd>←</kbd><kbd>→</kbd><span lang="zh-CN">也可以用方向键翻页</span></span></div>
   <div class="deck-wrap"><div id="deck" class="deck" aria-live="polite"></div></div>
   <nav class="turner" aria-label="Slide navigation"><button id="prevSlide" type="button"><span aria-hidden="true">←</span> Previous</button><div class="turner-center"><span id="slideCount"></span><progress id="slideProgress" max="1" value="0" aria-label="Lesson page progress"></progress></div><button id="nextSlide" type="button">Next <span aria-hidden="true">→</span></button></nav>
   <div class="bottom-bar"><a href="../index.html" lang="zh-CN">离线下载与安装</a><details class="extras"><summary lang="zh-CN">学习笔记与家长指引 <span aria-hidden="true">↗</span></summary><div id="extraContent"></div></details><footer lang="zh-CN"><span aria-hidden="true">✓</span> 完成标记自动保存在此浏览器 · 支持离线学习</footer></div>
 </main>
-<script src="app_day21.js"></script>
+<script defer src="app_day21.js"></script>
 </body></html>
