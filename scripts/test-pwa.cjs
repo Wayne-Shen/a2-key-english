@@ -57,7 +57,7 @@ async function request(file,headers={}){
  assert.equal((await request('html/day30')).status,200,'clean lesson URLs work offline');
  assert.equal((await request('')).status,200,'scope root opens dashboard offline');
  assert.equal((await request('index.html?source=homescreen')).status,200,'home query does not break cache lookup');
- for(const file of ['word-review.html','word-review.js','word-review.css','word-catalog.js','changelog.html'])assert.equal((await request(file)).status,200,`${file} is available offline`);
+ for(const file of ['word-review.html','word-review.js','word-review.css','word-catalog.js','changelog.html','update.html'])assert.equal((await request(file)).status,200,`${file} is available offline`);
  const a=assets.days[0].assets.find(a=>a.kind==='audio');
  assert.equal((await request(a.url)).status,503,'unsaved audio fails honestly offline');
  offline=false;const full=await fetchMock(new URL(a.url,BASE).href);await (await caches.open('a2-ipad-media-v1')).put(new URL(a.url,BASE).href,full);offline=true;
@@ -68,7 +68,9 @@ async function request(file,headers={}){
  }
  for(const range of ['bytes=999999999-','bytes=100-2','bytes=-0','bytes=0-1,3-4','garbage'])assert.equal((await request(a.url,{Range:range})).status,416);
  // Authentication pages cannot be cached as JavaScript, JSON, audio or transcripts.
- offline=false;brokenManifest=true;failurePath='html/app.js';
+ offline=false;brokenManifest=true;
+ await assert.rejects(lifetime('install'),/still publishing/,'a mismatched release must not replace the current cache');
+ brokenManifest=false;failurePath='html/app.js';
  await assert.rejects(lifetime('install'),/Sign-in page/);
  assert.equal((await (await meta.match(new URL('assets.json',BASE).href)).json()).version,assets.version,'failed setup leaves the last complete manifest intact');
  const before=fetched.length;

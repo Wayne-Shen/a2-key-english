@@ -31,6 +31,8 @@ Rebuild from this checkout with `python3 scripts/build.py`. Check with `node scr
 
 The published PWA has its own device/browser progress. Existing progress in the original local-file course is not automatically transferred.
 
+若普通窗口仍显示旧版而隐私窗口正常，请在普通窗口打开 [检查课程更新](https://wayne-shen.github.io/a2-key-english/update.html)，保持联网直到显示“课程已更新就绪”，再点击“打开新版课程”。无需清除网站数据。以后每次构建会自动更新 Service Worker 的版本号；新版就绪时显示“刷新使用新版”，手动刷新后开始使用，避免打断正在填写的练习。
+
 ## 我的生词本
 
 选择题点击选项后会立即自动核对答案；改选后即时更新反馈，仍保留 **Check answer** 按钮。填空题继续使用按钮核对。答案和解析保持默认隐藏。

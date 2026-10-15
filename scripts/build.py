@@ -1,6 +1,6 @@
 """Copy validated course assets into a standalone, reproducible PWA."""
 from pathlib import Path
-import hashlib,json,shutil,struct,zlib
+import hashlib,json,re,shutil,struct,zlib
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT.parent/'ket-a2-30day'
 DIST=ROOT/'dist'
@@ -76,6 +76,10 @@ for day in range(1,31):
     assets=[asset(p,'audio') for p in audio]+[asset(p,'transcript') for p in scripts]
     days.append({'day':day,'title':data['title'],'page':'html/index.html' if day==1 else f'html/{tag}.html','assets':assets,'bytes':sum(a['bytes'] for a in assets)})
 shell=[asset(p) for p in sorted(DIST.rglob('*')) if p.is_file() and 'audio' not in p.relative_to(DIST).parts and p.name not in ('sw.js','assets.json','_headers')]
-version=hashlib.sha256(json.dumps(shell+days,sort_keys=True).encode()+(DIST/'sw.js').read_bytes()).hexdigest()[:16]
+worker=(DIST/'sw.js').read_text()
+worker,stamps=re.subn(r"const BUILD_VERSION='[a-f0-9]+';", "const BUILD_VERSION='__BUILD_VERSION__';", worker)
+assert stamps==1, 'Missing service-worker build stamp'
+version=hashlib.sha256(json.dumps(shell+days,sort_keys=True).encode()+worker.encode()).hexdigest()[:16]
+(DIST/'sw.js').write_text(worker.replace('__BUILD_VERSION__',version))
 (DIST/'assets.json').write_text(json.dumps({'version':version,'shell':shell,'days':days,'total_audio_bytes':sum(d['bytes'] for d in days)},ensure_ascii=False,separators=(',',':')))
 print(json.dumps({'version':version,'lessons':len(days),'audio_files':sum(len([a for a in d['assets'] if a['kind']=='audio']) for d in days),'download_mb':round(sum(d['bytes'] for d in days)/1000000,1)}))
