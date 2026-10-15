@@ -39,6 +39,12 @@ const BASE = process.env.COURSE_TEST_URL || 'http://127.0.0.1:8765/';
             if (feedback.textContent) throw new Error('Typing must not auto-check incomplete input');
             continue;
           }
+          radios.forEach((radio, index) => {
+            const label = String.fromCharCode(65 + index);
+            const text = radio.closest('label').textContent.trim();
+            if (radio.value !== label || !text.startsWith(label + '. ')) throw new Error('Choice labels must follow their displayed positions');
+            if (/^[A-Z]\.\s*[A-Z]\.\s/.test(text)) throw new Error('Choice label is duplicated');
+          });
           const expected = card.querySelector('.answer').textContent.slice('Answer: '.length).trim();
           const correct = radios.find(radio => radio.value === expected);
           const wrong = radios.find(radio => radio.value !== expected);
@@ -55,6 +61,13 @@ const BASE = process.env.COURSE_TEST_URL || 'http://127.0.0.1:8765/';
         return count;
       });
     }
+    await page.goto(BASE + 'html/day05.html');
+    await page.selectOption('#sectionPicker', 'listening-part4');
+    await page.locator('#nextSlide').click();
+    assert.equal(await slide.locator('.qhead').textContent(), 'What does the boy want?');
+    assert.deepEqual(await slide.locator('.choice-row span').allTextContents(), ['A. A winter coat', 'B. Help with his idea', 'C. A new farm']);
+    await slide.locator('.choice-row').filter({hasText: 'B. Help with his idea'}).click();
+    assert.match(await slide.locator('.feedback').textContent(), /Correct!/);
     assert.deepEqual(errors, []);
     console.log(JSON.stringify({passed: true, lessons: 30, choice_questions: questions, automatic_feedback: true, retry: true, keyboard: true, typed_input_unchanged: true}));
   } finally { await browser.close(); }

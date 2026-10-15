@@ -35,6 +35,10 @@ for p in (SOURCE/'html').iterdir():
         marker='inputs.push(radio)'
         assert app.count(marker)==1, f'Cannot attach automatic choice checking: {p.name}'
         app=app.replace(marker, marker+';radio.onchange=()=>{if(radio.checked)check.onclick()}')
+        # Keys refer to option positions. Relabel after authored option rotations.
+        option_loop='item.choices.forEach((choice,i)=>{'
+        assert app.count(option_loop)==1, f'Cannot normalize option labels: {p.name}'
+        app=app.replace(option_loop, r"item.choices.forEach((sourceChoice,i)=>{const choice=String.fromCharCode(65+i)+'. '+sourceChoice.replace(/^(?:[A-Z]\.\s*)+/,'');")
         # Personal review belongs to the PWA; preserve the completed source course.
         target.write_text(app+'\nif(typeof WordReview!==\'undefined\')WordReview.attachLesson(D,slides,show);\n')
     else:shutil.copy2(p,target)
