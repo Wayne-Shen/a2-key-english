@@ -17,6 +17,8 @@ for p in (SOURCE/'html').iterdir():
     if p.suffix=='.html':
         text=p.read_text()
         text=text.replace('</head>','''<link rel="manifest" href="../manifest.webmanifest">
+<link rel="stylesheet" href="../word-review.css">
+<script src="../word-review.js" defer></script>
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -24,8 +26,25 @@ for p in (SOURCE/'html').iterdir():
 <script src="../register.js" defer></script>
 </head>''')
         text=text.replace('<div class="bottom-bar">','<div class="bottom-bar"><a href="../index.html" lang="zh-CN">离线下载与安装</a>')
+        text=text.replace('<span id="slideGroup"', '<a class="word-review-link" data-word-review-link href="../word-review.html" lang="zh-CN">我的生词本</a><span id="slideGroup"')
+        text=text.replace('<script src="app', '<script defer src="app')
         target.write_text(text)
+    elif p.suffix=='.js' and p.name.startswith('app'):
+        # Reuse the existing checker on selection changes, including keyboard changes.
+        app=p.read_text()
+        marker='inputs.push(radio)'
+        assert app.count(marker)==1, f'Cannot attach automatic choice checking: {p.name}'
+        app=app.replace(marker, marker+';radio.onchange=()=>{if(radio.checked)check.onclick()}')
+        # Personal review belongs to the PWA; preserve the completed source course.
+        target.write_text(app+'\nif(typeof WordReview!==\'undefined\')WordReview.attachLesson(D,slides,show);\n')
     else:shutil.copy2(p,target)
+# Canonical entries retain examples and primary days when marked on review slides.
+words=[]
+for day in range(1,31):
+    data=json.loads((SOURCE/f'html/data/day{day:02d}.json').read_text())
+    words.extend(dict(w,day=day) for w in data['new_vocabulary'])
+assert len(words)==len({w['id'] for w in words})==1796
+(DIST/'word-catalog.js').write_text('globalThis.A2WordCatalog='+json.dumps(words,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')+';\n')
 # Copy real MP3 and exact downloadable transcripts, preserving relative paths.
 for pattern in ('day*/*.mp3','day*/listening/*.mp3','scripts/day*/*.txt','scripts/day*/listening/*.txt'):
     for p in (SOURCE/'audio').glob(pattern):

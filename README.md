@@ -2,9 +2,11 @@
 
 A separate installable copy of the completed 30-day English course. The original course files are preserved. All 330 real MP3s and exact downloadable transcripts are included, as are the latest per-word Chinese reveal buttons.
 
+最新功能与验证记录：[更新日志](CHANGELOG.md)。发布后的首页页脚也可打开 [网页更新日志](https://wayne-shen.github.io/a2-key-english/changelog.html)。
+
 ## Install and use offline
 
-Open [A2 Key on your iPad](https://a2-key-ipad-course-wayne.wayneshen.chatgpt.site) in **Safari** while online. Sign in with the account that owns the private Site if prompted.
+Open [A2 Key on your iPad](https://wayne-shen.github.io/a2-key-english/) in **Safari** while online. The older private ChatGPT Site remains a separate deployment.
 
 1. Tap **Share → Add to Home Screen**. Keep **Open as Web App** enabled if shown, then tap **Add**.
 2. Open **A2 Key** from the Home Screen.
@@ -28,6 +30,18 @@ Installation instructions: [Apple iPad User Guide](https://support.apple.com/gui
 Rebuild from this checkout with `python3 scripts/build.py`. Check with `node scripts/test-pwa.cjs` and `node scripts/test-downloads.cjs`. Changes to copied course files must be made in the original course generator and then recopied. PWA-specific changes belong in this copy.
 
 The published PWA has its own device/browser progress. Existing progress in the original local-file course is not automatically transferred.
+
+## 我的生词本
+
+选择题点击选项后会立即自动核对答案；改选后即时更新反馈，仍保留 **Check answer** 按钮。填空题继续使用按钮核对。答案和解析保持默认隐藏。
+
+在全部 30 天课程的 New vocabulary 和 Review words 词卡上，点击 **☆ 标记不熟练** 即可保存单词；再次点击即可取消。首页和每课的 **我的生词本** 显示待复习数量，进入后可搜索英文或中文、按主学习日筛选、查看英文解释和例句，再展开中文。点击 **学会了，取消标记** 可将词条移除；**回到课程** 会打开该词对应的主学习词卡。
+
+同一个词在不同日期共用标记，保存在当前浏览器的 `a2-unfamiliar-words-v1` 中，与原有课程完成记录独立。刷新和离线使用会保留标记；不同设备/网站之间不会自动同步，清除网站数据会删除记录。存储读取或写入失败时会显示提示，不假装保存成功。
+
+`dist/word-review.html`、`word-review.js` 和 `word-review.css` 是 PWA 专用文件。构建脚本自动给复制的课程添加入口与标记控件，并从已验证课程生成 `word-catalog.js`，保留 1,796 个词条的原始例句及主学习日。它们都进入离线缓存；源课程文本、题目与音频保持原样。
+
+浏览器回归：为 `dist/` 启动本地服务器（默认 `http://127.0.0.1:8765/`），在可用 Playwright 的 Node 环境运行 `node scripts/test-word-review.cjs`。可通过 `COURSE_TEST_URL` 指定地址，通过 `COURSE_BROWSER_PATH` 指定 Chrome 可执行文件。检查全部 30 课的标记按钮、刷新保存、跨页去重、跨标签页同步、取消标记、搜索筛选、原词卡跳转、存储失败、真实断网复习与平板/手机宽度。已通过 Chrome；本机未安装 WebKit，Safari/iPad 实机检查仍待完成。
 
 Validation: all 30 copied decks passed the original course regression harness (2,430 objective questions). PWA tests verify hashes and references, offline lesson navigation, MP3 range requests, failed install/authentication responses, download integrity, resume and accurate readiness counts. Physical iPad installation and playback require checking on your device.
 

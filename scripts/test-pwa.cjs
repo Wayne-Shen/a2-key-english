@@ -57,6 +57,7 @@ async function request(file,headers={}){
  assert.equal((await request('html/day30')).status,200,'clean lesson URLs work offline');
  assert.equal((await request('')).status,200,'scope root opens dashboard offline');
  assert.equal((await request('index.html?source=homescreen')).status,200,'home query does not break cache lookup');
+ for(const file of ['word-review.html','word-review.js','word-review.css','word-catalog.js','changelog.html'])assert.equal((await request(file)).status,200,`${file} is available offline`);
  const a=assets.days[0].assets.find(a=>a.kind==='audio');
  assert.equal((await request(a.url)).status,503,'unsaved audio fails honestly offline');
  offline=false;const full=await fetchMock(new URL(a.url,BASE).href);await (await caches.open('a2-ipad-media-v1')).put(new URL(a.url,BASE).href,full);offline=true;

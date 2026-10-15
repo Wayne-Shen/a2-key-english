@@ -1,4 +1,4 @@
-/* Cache only this course's known assets; audio downloads are user initiated. */
+/* Cache the course, personal word review and automatic choice checking; audio downloads are user initiated. */
 const SHELL_PREFIX='a2-ipad-shell-';
 const META='a2-ipad-metadata-v1';
 const MEDIA='a2-ipad-media-v1';
