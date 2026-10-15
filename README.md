@@ -35,9 +35,11 @@ Validation: all 30 copied decks passed the original course regression harness (2
 
 Private repository: https://github.com/Wayne-Shen/a2-key-english
 
-The complete learner-facing website is in `dist/`. The `gh-pages` branch publishes only those files at its root, including all 30 lessons, 330 MP3s, transcripts, and offline support. Credentials and course production files are outside this checkout. `.nojekyll` keeps GitHub Pages from processing the static files with Jekyll.
+Status (2026-10-15): the private repository is uploaded and verified. GitHub Pages is disabled: the current GitHub plan does not support Pages for this private repository, and hosting was deferred at the owner's request.
 
-After committing updates, validate and publish from this checkout:
+The complete learner-facing website is in `dist/`. The prepared `gh-pages` branch contains only those files at its root, including all 30 lessons, 330 MP3s, transcripts, and offline support. Credentials and course production files are outside this checkout. `.nojekyll` keeps GitHub Pages from processing the static files with Jekyll if hosting is enabled later.
+
+After committing updates, validate and upload both branches from this checkout (hosting remains disabled):
 
 ```sh
 node scripts/test-pwa.cjs
