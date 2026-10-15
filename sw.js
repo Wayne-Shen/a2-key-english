@@ -1,5 +1,7 @@
 /* Cache the course, personal word review and automatic choice checking; audio downloads are user initiated. */
 const SHELL_PREFIX='a2-ipad-shell-';
+// Updated by build.py so every shell release triggers a browser update check.
+const BUILD_VERSION='ecfa23376fdce12a';
 const META='a2-ipad-metadata-v1';
 const MEDIA='a2-ipad-media-v1';
 const ROOT=new URL('./',self.registration.scope);
@@ -27,6 +29,7 @@ async function manifest(){
 self.addEventListener('install',event=>event.waitUntil((async()=>{
   const response=await verifiedFetch(MANIFEST_URL),data=await response.clone().json();
   if(!data.version||data.days?.length!==30||!Array.isArray(data.shell))throw new Error('Invalid course manifest.');
+  if(data.version!==BUILD_VERSION)throw new Error('Course update is still publishing. Please retry in a moment.');
   const shell=await caches.open(SHELL_PREFIX+data.version);
   // A failed or interrupted install never promotes an incomplete lesson cache.
   for(let start=0;start<data.shell.length;start+=4){
