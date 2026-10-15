@@ -30,3 +30,22 @@ Rebuild from this checkout with `python3 scripts/build.py`. Check with `node scr
 The published PWA has its own device/browser progress. Existing progress in the original local-file course is not automatically transferred.
 
 Validation: all 30 copied decks passed the original course regression harness (2,430 objective questions). PWA tests verify hashes and references, offline lesson navigation, MP3 range requests, failed install/authentication responses, download integrity, resume and accurate readiness counts. Physical iPad installation and playback require checking on your device.
+
+## GitHub repository and Pages
+
+Private repository: https://github.com/Wayne-Shen/a2-key-english
+
+The complete learner-facing website is in `dist/`. The `gh-pages` branch publishes only those files at its root, including all 30 lessons, 330 MP3s, transcripts, and offline support. Credentials and course production files are outside this checkout. `.nojekyll` keeps GitHub Pages from processing the static files with Jekyll.
+
+After committing updates, validate and publish from this checkout:
+
+```sh
+node scripts/test-pwa.cjs
+node scripts/test-downloads.cjs
+git push origin main
+git subtree push --prefix=dist origin gh-pages
+```
+
+In repository **Settings → Pages**, select **Deploy from a branch**, `gh-pages`, and `/ (root)`. GitHub Pages hosting from a private repository requires an eligible paid GitHub plan. The repository stays private; the published lesson website is public. The expected address after a successful deployment is https://wayne-shen.github.io/a2-key-english/.
+
+The existing private ChatGPT Site is a separate deployment and retains its own address and access settings.
