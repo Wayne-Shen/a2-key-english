@@ -1,6 +1,7 @@
 """Copy validated course assets into a standalone, reproducible PWA."""
 from pathlib import Path
 import hashlib,json,re,shutil,struct,zlib
+from english_lesson import localize
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT.parent/'ket-a2-30day'
 DIST=ROOT/'dist'
@@ -16,6 +17,13 @@ for p in (SOURCE/'html').iterdir():
     target=DIST/'html'/p.name
     if p.suffix=='.html':
         text=p.read_text()
+        if 'id="deck"' in text:
+            day=1 if p.name=='index.html' else int(re.fullmatch(r'day(\d+)\.html',p.name).group(1))
+            template=(ROOT/'scripts/lesson-template.html').read_text()
+            template=template.replace('{{DAY}}',str(day)).replace('{{DAY_PAD}}',f'{day:02d}').replace('{{APP}}','app.js' if day==1 else f'app_day{day:02d}.js')
+            assert all(f'id="{name}"' in template for name in ('deck','done','courseMenu','sectionPicker','lessonTitle','extraContent'))
+            target.write_text(template)
+            continue
         text=text.replace('</head>','''<link rel="manifest" href="../manifest.webmanifest">
 <link rel="stylesheet" href="../word-review.css">
 <script src="../word-review.js" defer></script>
@@ -25,7 +33,7 @@ for p in (SOURCE/'html').iterdir():
 <meta name="apple-mobile-web-app-title" content="A2 Key">
 <script src="../register.js" defer></script>
 </head>''')
-        text=text.replace('<div class="bottom-bar">','<div class="bottom-bar"><a href="../index.html" lang="zh-CN">离线下载与安装</a>')
+        text=text.replace('<div class="bottom-bar">','<div class="bottom-bar"><a href="../index.html" lang="zh-CN">课程首页与离线下载</a>')
         text=text.replace('<span id="slideGroup"', '<a class="word-review-link" data-word-review-link href="../word-review.html" lang="zh-CN">我的生词本</a><span id="slideGroup"')
         text=text.replace('<script src="app', '<script defer src="app')
         target.write_text(text)
@@ -39,8 +47,18 @@ for p in (SOURCE/'html').iterdir():
         option_loop='item.choices.forEach((choice,i)=>{'
         assert app.count(option_loop)==1, f'Cannot normalize option labels: {p.name}'
         app=app.replace(option_loop, r"item.choices.forEach((sourceChoice,i)=>{const choice=String.fromCharCode(65+i)+'. '+sourceChoice.replace(/^(?:[A-Z]\.\s*)+/,'');")
+        # Keep presentation separate from authored lesson content and answer checking.
+        focus_hook="id('deck').setAttribute('aria-label',`${g.label}, slide ${current+1} of ${slides.length}`)"
+        assert app.count(focus_hook)==1, f'Cannot attach focused lesson layout: {p.name}'
+        app=app.replace(focus_hook,focus_hook+";if(typeof LessonFocus!=='undefined')LessonFocus.update(D,slides,groups,current)")
+        show_start='function show(n){current='
+        assert app.count(show_start)==1, f'Cannot capture lesson reading position: {p.name}'
+        app=app.replace(show_start,"function show(n){if(typeof LessonFocus!=='undefined')LessonFocus.capture(slides[current]);current=")
+        lesson_day=1 if p.name=='app.js' else int(re.fullmatch(r'app_day(\d+)\.js',p.name).group(1))
+        lesson_data=json.loads((SOURCE/f'html/data/day{lesson_day:02d}.json').read_text())
+        app=localize(app,lesson_data)
         # Personal review belongs to the PWA; preserve the completed source course.
-        target.write_text(app+'\nif(typeof WordReview!==\'undefined\')WordReview.attachLesson(D,slides,show);\n')
+        target.write_text(app+'\nif(typeof WordReview!==\'undefined\')WordReview.attachLesson(D,slides,show);\nif(typeof LessonFocus!==\'undefined\')LessonFocus.update(D,slides,groups,current);\n')
     else:shutil.copy2(p,target)
 # Canonical entries retain examples and primary days when marked on review slides.
 words=[]
@@ -79,6 +97,9 @@ for day in range(1,31):
     assert len(audio)==11,(day,len(audio))
     assets=[asset(p,'audio') for p in audio]+[asset(p,'transcript') for p in scripts]
     days.append({'day':day,'title':data['title'],'page':'html/index.html' if day==1 else f'html/{tag}.html','assets':assets,'bytes':sum(a['bytes'] for a in assets)})
+# The dashboard uses the same locked course titles as the full lesson decks.
+(DIST/'course-data.js').write_text('globalThis.A2StudioCourses='+json.dumps(
+    [{'day':d['day'],'title':d['title']} for d in days],ensure_ascii=False,separators=(',',':'))+';\n')
 # Finder files and hosting markers are not learner assets and may not be published.
 shell=[asset(p) for p in sorted(DIST.rglob('*')) if p.is_file() and 'audio' not in p.relative_to(DIST).parts and not any(part.startswith('.') for part in p.relative_to(DIST).parts) and p.name not in ('sw.js','assets.json','_headers')]
 worker=(DIST/'sw.js').read_text()

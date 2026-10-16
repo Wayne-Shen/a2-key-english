@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f8f4"><title>A2 Key · Day {{DAY}}</title>
+<link rel="manifest" href="../manifest.webmanifest"><link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../word-review.css"><link rel="stylesheet" href="../lesson.css">
+<script src="../course-access.js" defer></script><script src="../register.js" defer></script><script src="../word-review.js" defer></script><script src="../lesson.js" defer></script>
+</head>
+<body class="lesson-loading">
+<a class="skip-link" href="#practice">Skip to practice</a>
+<header class="lesson-header"><a class="brand" href="../index.html" aria-label="A2 Key dashboard"><span class="brand-mark" aria-hidden="true">a<span>2</span></span><span>A2 Key</span></a><a class="dashboard-link" href="../index.html">← Dashboard</a>
+<details class="course-menu" id="courseMenu"><summary id="courseToggle">Lesson tools <span aria-hidden="true">⌄</span></summary><div class="course-panel">
+<div class="tools-heading"><strong>Day {{DAY_PAD}} · Lesson tools</strong><span class="panel-count" id="courseProgress"></span></div>
+<label class="complete"><input id="done" type="checkbox"><span id="completionLabel" lang="en">Mark day complete</span></label>
+<p id="unlock-notice" class="unlock-notice" role="status"></p><a id="unlocked-next" class="tool-link" hidden></a>
+<a class="tool-link" data-word-review-link href="../word-review.html" lang="en">My word collection</a><a class="tool-link" href="../index.html#vocabulary">Word studio →</a><a class="tool-link" href="../index.html#downloads">Offline & downloads →</a>
+<details class="goals"><summary>Today’s goals</summary><p id="lessonGoal"></p><p class="lesson-facts"><span id="wordCount"></span><span id="grammarBadge"></span><span id="topicBadge"></span></p></details>
+<details class="extras"><summary>Notes & parent guide</summary><div id="extraContent"></div></details>
+<details class="change-day"><summary>Change lesson</summary><nav class="day-nav" id="dayNav" aria-label="Course days"></nav></details>
+<span id="dayProgress" hidden></span>
+</div></details></header>
+<section id="lesson-access" class="lesson-access" aria-labelledby="locked-title" hidden><div class="lesson-lock-card"><p class="eyebrow">ONE DAY AT A TIME</p><h1 id="locked-title">This lesson is locked</h1><p id="locked-description"></p><a class="locked-resume" id="locked-resume" href="index.html">Go to Day 01 →</a><a class="dashboard-link" href="../index.html">← My dashboard</a></div></section>
+<main id="practice" tabindex="-1">
+<div class="lesson-heading"><div><p class="eyebrow">DAY {{DAY_PAD}} · YOUR ENGLISH PRACTICE</p><h1 id="lessonTitle"></h1></div></div>
+<div class="deck-toolbar"><label class="section-select"><span>Practice section</span><select id="sectionPicker" aria-label="Choose a practice section"></select></label><span id="sectionCount" class="section-count" role="status"></span><span id="slideGroup" hidden></span></div>
+<div class="deck-wrap"><div id="deck" class="deck" aria-live="polite"></div></div>
+<nav class="turner" aria-label="Slide navigation"><button id="prevSlide" type="button">← Previous</button><div class="turner-center"><span id="slideCount" hidden></span><span id="focusCount"></span><progress id="slideProgress" max="1" value="0" aria-label="Practice section progress"></progress></div><button id="nextSlide" type="button">Next →</button></nav>
+<p class="lesson-footnote">Take your time. One step at a time.</p>
+<noscript>Please enable JavaScript to use the lesson.</noscript>
+</main>
+<script type="application/json" id="lesson-entry" data-day="{{DAY}}" data-src="{{APP}}"></script>
+</body></html>

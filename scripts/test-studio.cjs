@@ -1,0 +1,175 @@
+// Start dist/ at COURSE_TEST_URL (default localhost:8766). Requires Playwright.
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const {chromium} = require('playwright');
+const BASE = process.env.COURSE_TEST_URL || 'http://127.0.0.1:8766/';
+const SESSION = 'a2-studio-session-v1';
+const REVIEW = 'a2-unfamiliar-words-v1';
+const screenshots = process.env.STUDIO_SCREENSHOTS || '/tmp/a2-app-previews';
+const checks = [];
+(async()=>{
+  fs.mkdirSync(screenshots,{recursive:true});
+  const browser = await chromium.launch({headless:true,executablePath:process.env.COURSE_BROWSER_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+  try {
+    const context = await browser.newContext({viewport:{width:1194,height:834},deviceScaleFactor:1,reducedMotion:'reduce'});
+    const page = await context.newPage(), errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto(BASE+'index.html');
+    assert.equal(await page.locator('#day-grid > *').count(),30);
+    assert.equal(await page.locator('#next-title').innerText(),'Hello, everyone');
+    await page.screenshot({path:path.join(screenshots,'dashboard-ipad.png'),fullPage:true});
+    await page.evaluate(()=>{
+      localStorage.setItem('a2-day-completed','[1,2]');
+      localStorage.setItem('a2-unfamiliar-words-v1',JSON.stringify({CORE0031:1234}));
+    });
+    await page.reload();
+    assert.equal(await page.locator('#days-complete').innerText(),'2');
+    assert.equal(await page.locator('#next-title').innerText(),'At home');
+    assert.equal(await page.locator('#continue-lesson').getAttribute('href'),'html/day03.html');
+    checks.push('Real completion and next-day recommendation; all 30 course links');
+    await page.locator('[data-nav=vocabulary]').click();
+    await page.selectOption('#practice-day','1');
+    assert.equal(await page.locator('#word-title').innerText(),'age');
+    assert.equal(await page.locator('.translation').getAttribute('open'),null);
+    assert.equal(await page.locator('.translation p').isVisible(),false);
+    await page.screenshot({path:path.join(screenshots,'vocabulary-ipad.png'),fullPage:true});
+    await page.locator('.translation summary').click();
+    assert.equal(await page.locator('.translation p').innerText(),'年龄');
+    await page.getByRole('button',{name:'Try a quick check'}).click();
+    assert.equal(await page.locator('[data-next]').isDisabled(),true);
+    await page.locator('.choice').filter({hasText:'and'}).click();
+    assert.match(await page.locator('.feedback').innerText(),/Not quite/);
+    await page.getByRole('button',{name:'Need a Chinese hint?'}).click();
+    assert.equal(await page.locator('.feedback').innerText(),'年龄');
+    await page.locator('.choice').filter({hasText:'age'}).click();
+    assert.equal(await page.locator('.speaking-box').isVisible(),true);
+    assert.equal(await page.locator('[data-next]').isEnabled(),true);
+    await page.screenshot({path:path.join(screenshots,'recall-ipad.png'),fullPage:true});
+    await page.locator('[data-next]').click();
+    await page.reload();
+    assert.equal(await page.locator('#word-title').innerText(),'aunt');
+    assert.equal(await page.locator('.translation p').isVisible(),false);
+    checks.push('Hidden translations, wrong-answer retry, hints, speaking prompt, refresh/resume');
+    await page.getByRole('button',{name:'Save for later',exact:true}).click();
+    for(let i=0;i<4;i++){
+      const word = await page.locator('#word-title').innerText();
+      await page.getByRole('button',{name:'Try a quick check'}).click();
+      await page.locator('.choice').filter({hasText:word}).click();
+      await page.locator('[data-next]').click();
+    }
+    assert.match(await page.locator('#word-title').innerText(),/One small round/);
+    assert.deepEqual(await page.locator('.summary-stats strong').allTextContents(),['5','1']);
+    await page.getByRole('button',{name:'Practise 1 again'}).click();
+    assert.equal(await page.locator('#word-title').innerText(),'aunt');
+    assert.match(await page.locator('#round-count').innerText(),/1 \/ 1/);
+    await page.getByRole('button',{name:'Try a quick check'}).click();
+    await page.locator('.choice').filter({hasText:'aunt'}).click();
+    await page.locator('[data-next]').click();
+    assert(await page.evaluate(()=>Object.hasOwn(JSON.parse(localStorage.getItem('a2-unfamiliar-words-v1')),'CORE0094')),'saved word stays marked after one recall');
+    assert.equal(await page.evaluate(()=>localStorage.getItem('a2-day-completed')),'[1,2]');
+    assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('a2-unfamiliar-words-v1')).CORE0031),1234,'original mark timestamp preserved');
+    await page.getByRole('button',{name:'Try another round'}).click();
+    const roundTwo=await page.evaluate(()=>JSON.parse(localStorage.getItem('a2-studio-session-v1')).ids);
+    for(let i=0;i<roundTwo.length;i++){
+      const word=await page.locator('#word-title').innerText();
+      await page.getByRole('button',{name:'Try a quick check'}).click();
+      await page.locator('.choice').filter({hasText:word}).click();
+      await page.locator('[data-next]').click();
+    }
+    await page.getByRole('button',{name:'Try another round'}).click();
+    const nextRound=await page.evaluate(()=>JSON.parse(localStorage.getItem('a2-studio-session-v1')));
+    assert(nextRound.ids.every(id=>!roundTwo.includes(id)&&!nextRound.seen.includes(id)),'successive rounds offer unseen words');
+    checks.push('Six-word round, accurate summary, targeted retry; course completion and original word marks preserved');
+    await page.locator('#source-saved').click();
+    assert.equal(await page.locator('#word-title').innerText(),'age');
+    await page.evaluate(()=>{localStorage.removeItem('a2-unfamiliar-words-v1');localStorage.removeItem('a2-studio-prototype-review-v1');});
+    await page.locator('#source-saved').click();
+    assert.equal(await page.locator('#word-title').innerText(),'Your collection starts here.');
+    await page.reload();
+    assert.equal(await page.locator('#word-title').innerText(),'Your collection starts here.','empty collection survives refresh');
+    await page.getByRole('button',{name:'Try lesson words'}).click();
+    await page.evaluate(()=>localStorage.setItem('a2-day-completed',JSON.stringify(Array.from({length:30},(_,i)=>i+1))));
+    await page.reload();
+    for(const d of [1,10,20,30]){
+      await page.selectOption('#practice-day',String(d));
+      assert.match(await page.locator('.word-topline').innerText(),new RegExp(`DAY ${String(d).padStart(2,'0')}`));
+    }
+    checks.push('Real lesson marks, empty collection and day changes including Day 30');
+    for(const size of [{width:1024,height:768},{width:768,height:1024},{width:390,height:844}]){
+      await page.setViewportSize(size);
+      await page.selectOption('#practice-day','1');
+      await page.evaluate(()=>window.scrollTo(0,0));
+      assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'studio has no horizontal overflow');
+      const dims=await page.locator('.word-actions .primary').boundingBox();assert(dims.height>=44);
+      await page.screenshot({path:path.join(screenshots,`vocabulary-${size.width}.png`),fullPage:true});
+      await page.locator('[data-nav=dashboard]').click();
+      await page.evaluate(()=>window.scrollTo(0,0));
+      assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'dashboard has no horizontal overflow');
+      await page.screenshot({path:path.join(screenshots,`dashboard-${size.width}.png`),fullPage:true});
+      await page.locator('[data-nav=vocabulary]').click();
+    }
+    await page.locator('[data-nav=downloads]').click();
+    await page.waitForSelector('#download-grid .day-card');
+    assert.equal(await page.locator('#download-grid .day-card').count(),30);
+    for(const size of [{width:1194,height:834},{width:768,height:1024},{width:390,height:844}]){
+      await page.setViewportSize(size);
+      assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'downloads has no horizontal overflow');
+      await page.screenshot({path:path.join(screenshots,`downloads-${size.width}.png`)});
+    }
+    assert(!await page.locator('#downloads').innerText().then(text=>text.includes('iPad')),'downloads use device-neutral wording');
+    await page.locator('[data-nav=vocabulary]').click();
+    checks.push('1024×768, 768×1024 and 390×844 layouts; no horizontal overflow; touch target sizes');
+    await page.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(resolve=>navigator.serviceWorker.addEventListener('controllerchange',resolve,{once:true}));});
+    await context.setOffline(true);
+    await page.reload();
+    await page.waitForSelector('#word-title');
+    await page.getByRole('button',{name:'Try a quick check'}).click();
+    assert.equal(await page.locator('.choice').count(),3);
+    await page.locator('[data-nav=dashboard]').click();
+    assert.equal(await page.locator('#day-grid > *').count(),30);
+    checks.push('Real service-worker offline reload, vocabulary check and dashboard navigation');
+    await context.setOffline(false);
+    await page.evaluate(()=>localStorage.setItem('a2-day-completed',JSON.stringify(Array.from({length:30},(_,i)=>i+1))));
+    await page.reload();assert.equal(await page.locator('#days-complete').innerText(),'30');
+    assert.match(await page.locator('#progress-copy').innerText(),/All 30/);
+    const broken=await browser.newContext();
+    await broken.addInitScript(()=>{Storage.prototype.getItem=()=>{throw Error('blocked');};Storage.prototype.setItem=()=>{throw Error('blocked');};});
+    const blocked=await broken.newPage();await blocked.goto(BASE+'index.html#vocabulary');
+    assert.equal(await blocked.locator('#storage-error').isVisible(),true);
+    assert.equal(await blocked.locator('#word-title').innerText(),'age');
+    await blocked.getByRole('button',{name:'Save for later',exact:true}).click();
+    assert.equal(await blocked.locator('#word-title').innerText(),'age','failed mark is not presented as saved');
+    await broken.close();
+    const corrupted=await browser.newContext();
+    await corrupted.addInitScript(()=>localStorage.setItem('a2-studio-session-v1','{"index":-9}'));
+    const invalid=await corrupted.newPage();await invalid.goto(BASE+'index.html#vocabulary');
+    assert.equal(await invalid.locator('#storage-error').isVisible(),true);
+    assert.equal(await invalid.locator('#word-title').innerText(),'age');
+    await corrupted.close();
+    const migration=await browser.newContext();
+    await migration.addInitScript(()=>{
+      if(localStorage.getItem('migration-fixture'))return;
+      localStorage.setItem('migration-fixture','true');
+      localStorage.setItem('a2-unfamiliar-words-v1','{"CORE0031":42}');
+      localStorage.setItem('a2-studio-prototype-review-v1','["CORE0031","CORE0094"]');
+      localStorage.setItem('a2-studio-prototype-session-v1',JSON.stringify({version:1,source:'day',day:1,ids:['CORE0031','CORE0094'],index:1,recalled:['CORE0031'],again:[]}));
+    });
+    const imported=await migration.newPage();await imported.goto(BASE+'index.html#vocabulary');
+    assert.equal(await imported.locator('#word-title').innerText(),'aunt','approved prototype round resumes');
+    assert.equal(await imported.evaluate(()=>JSON.parse(localStorage.getItem('a2-unfamiliar-words-v1')).CORE0031),42);
+    await imported.goto(BASE+'word-review.html');
+    assert.equal(await imported.locator('.review-word').count(),2,'prototype words join the shared collection');
+    await imported.getByRole('button',{name:'aunt: learned, remove',exact:true}).click();
+    await imported.goto(BASE+'index.html#collection');
+    assert.equal(await imported.evaluate(()=>Object.hasOwn(JSON.parse(localStorage.getItem('a2-unfamiliar-words-v1')),'CORE0094')),false,'removed marks are not imported again');
+    await imported.goto(BASE+'prototype/#vocabulary');
+    await imported.waitForURL('**/index.html#vocabulary');
+    await migration.close();
+    checks.push('Full-day round progression; responsive downloads; prototype migration and bookmark compatibility');
+    checks.push('All-days-complete state; denied storage and corrupt-session recovery');
+    assert.deepEqual(errors,[],'No browser runtime errors');
+    console.log(JSON.stringify({passed:true,checks,screenshots},null,2));
+    await context.close();
+  } finally {await browser.close();}
+})().catch(error=>{console.error(error);process.exitCode=1;});

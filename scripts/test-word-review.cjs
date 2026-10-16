@@ -17,6 +17,7 @@ async function run(engine, name) {
     assert.equal(await age.getAttribute('aria-pressed'), 'true');
     await page.reload();
     assert.equal(await age.getAttribute('aria-pressed'), 'true', 'mark survives reload');
+    await page.evaluate(()=>localStorage.setItem('a2-day-completed','[1]'));
     await page.goto(BASE + 'html/day02.html');
     await page.selectOption('#sectionPicker', 'review');
     assert.equal(await age.getAttribute('aria-pressed'), 'true', 'same word shares its mark on review slides');
@@ -33,18 +34,18 @@ async function run(engine, name) {
     await other.locator('.review-word').filter({has: other.getByRole('heading', {name: 'age', exact: true})}).locator('summary').click();
     assert.equal(await other.locator('.word-translation[open]').count(), 1);
     assert((await other.locator('.word-example').allTextContents()).some(t => t.includes('Children of my age')), 'canonical example is present even when marked on a review slide');
-    await other.getByLabel('查找单词').fill('年龄');
+    await other.getByLabel('Find a word').fill('年龄');
     assert.equal(await other.locator('.review-word').count(), 1, 'Chinese search');
-    await other.getByLabel('查找单词').fill(' AGE ');
+    await other.getByLabel('Find a word').fill(' AGE ');
     assert.equal(await other.locator('.review-word').count(), 1, 'case-insensitive search');
-    await other.getByLabel('查找单词').fill('');
-    await other.getByLabel('学习日期').selectOption('2');
+    await other.getByLabel('Find a word').fill('');
+    await other.getByLabel('Learning day').selectOption('2');
     assert.equal(await other.locator('.review-word').count(), 1);
-    await other.getByLabel('学习日期').selectOption('30');
+    await other.getByLabel('Learning day').selectOption('30');
     assert.equal(await other.locator('.review-word').count(), 0);
-    assert.equal(await other.locator('#word-empty-title').textContent(), '没有找到匹配的单词');
-    await other.getByLabel('学习日期').selectOption('');
-    await other.getByRole('button', {name: 'age：学会了，取消标记', exact: true}).click();
+    assert.equal(await other.locator('#word-empty-title').textContent(), 'No matching words');
+    await other.getByLabel('Learning day').selectOption('');
+    await other.getByRole('button', {name: 'age: learned, remove', exact: true}).click();
     await page.waitForFunction(() => document.querySelector('[data-word-id="CORE0031"]').getAttribute('aria-pressed') === 'false');
     assert.equal(await other.locator('#word-count').textContent(), '1');
     await other.locator('.word-actions a').click();
@@ -53,7 +54,7 @@ async function run(engine, name) {
     await page.goto(BASE + 'word-review.html');
     await page.locator('.word-learned').click();
     assert.equal(await page.locator('#word-count').textContent(), '0');
-    assert.equal(await page.locator('#word-empty-title').textContent(), '生词本里还没有单词');
+    assert.equal(await page.locator('#word-empty-title').textContent(), 'Your collection is empty');
     await page.reload();
     assert.equal(await page.locator('.review-word').count(), 0, 'removal persists');
     // Preserve independent course progress and fail honestly if storage cannot be written.
@@ -66,6 +67,7 @@ async function run(engine, name) {
     await page.reload();
     assert.equal(await page.evaluate(() => localStorage.getItem('a2-day-completed')), '[7]');
     // Check every lesson receives new and scheduled-review marking controls.
+    await page.evaluate(()=>localStorage.setItem('a2-day-completed',JSON.stringify(Array.from({length:30},(_,i)=>i+1))));
     for (let day = 1; day <= 30; day++) {
       await page.goto(BASE + `html/${day === 1 ? 'index' : 'day' + String(day).padStart(2, '0')}.html`);
       const result = await page.evaluate(() => ({actual: document.querySelectorAll('.word-mark').length, expected: D.new_vocabulary.length + D.review_vocabulary.length}));

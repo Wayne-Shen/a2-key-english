@@ -2,7 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const ROOT=path.resolve(__dirname,'..');
 const harness=path.resolve(ROOT,'../ket-a2-30day/scripts/test_deck_dashboard.js');
-const code=fs.readFileSync(harness,'utf8')+'\nglobalThis.result={all,slides};';
+const code=fs.readFileSync(harness,'utf8').replaceAll('今日已完成','Day complete').replaceAll('2 / 30 已完成','2 / 30 completed')+'\nglobalThis.result={all,slides};';
 let questions=0;
 for(let day=1;day<=30;day++){
  const app=path.join(ROOT,'dist/html',day===1?'app.js':`app_day${String(day).padStart(2,'0')}.js`);

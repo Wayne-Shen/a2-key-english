@@ -1,43 +1,50 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#3455dc"><title>更新日志 · A2 Key</title>
+<meta name="theme-color" content="#f6f8f4"><title>What's new · A2 Key</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="pwa.css"><script src="register.js" defer></script>
+<link rel="stylesheet" href="studio.css"><script src="register.js" defer></script>
 </head>
-<body>
-<header><a class="brand" href="index.html"><img src="icons/icon-192.png" width="44" height="44" alt="">A2 Key <small>Little steps. Big progress.</small></a><a href="index.html">← 返回课程首页</a></header>
-<main>
-<section class="hero"><p class="eyebrow">WHAT'S NEW</p><h1>更新日志</h1><p><time datetime="2026-10-15">2026 年 10 月 15 日</time> · 生词复习与即时反馈</p></section>
-<article class="install"><h2>修复：选择题选项字母与判题错位</h2><p>选项按显示位置统一编号为 A、B、C（配对题为 A–H），清理重复字母前缀。保留选项内容的排列顺序，让选项字母和自动判题正确对应。已核验全部 30 天的 2,100 道选择题，包含 Day 5 Listening Part 4 第 2 题。</p></article>
-<article class="install"><h2>修复：普通窗口仍显示旧版课程</h2><p>离线清单排除本机隐藏文件，修复线上缺失文件导致新版安装中断的问题。课程变化后会自动触发离线版本更新，新版就绪时显示“刷新使用新版”，由你选择何时刷新。新增更新入口，无需清除网站数据即可检查更新，保留学习记录、生词标记和已下载音频。</p><a class="primary link-button" href="update.html">检查课程更新 →</a></article>
-<article class="install">
-<h2>新增：我的生词本</h2>
-<ul>
-<li>全部 30 天的新词和复习词卡都可标记“不熟练”，再次点击即可取消。</li>
-<li>从首页或课程页进入生词本，同一个词在不同课程中共用标记。</li>
-<li>支持搜索英文或中文、按主学习日筛选；先看英文释义和例句，再展开中文。</li>
-<li>学会后点击“取消标记”移除，或直接返回该词对应的主学习词卡。</li>
-<li>自动保存到当前浏览器，支持离线复习和跨标签页同步；保存异常时会显示提示。</li>
-</ul>
-<a class="primary link-button" href="word-review.html">打开我的生词本 →</a>
+<body class="updates-page">
+<a class="skip" href="#updates">Skip to updates</a>
+<div class="shell"><aside class="sidebar">
+<a class="brand" href="index.html#dashboard"><span class="brand-mark" aria-hidden="true">a<span>2</span></span><span>A2 Key<small>A little every day.</small></span></a>
+<p class="nav-label">YOUR LEARNING SPACE</p>
+<nav aria-label="Main navigation"><a href="index.html#dashboard" data-nav="dashboard"><span aria-hidden="true">⌂</span> My dashboard</a><a href="index.html#vocabulary" data-nav="vocabulary"><span aria-hidden="true">▤</span> Word studio</a><a href="index.html#downloads" data-nav="downloads"><span aria-hidden="true">↓</span> Offline & downloads</a></nav>
+<div class="sidebar-note"><span class="sprout" aria-hidden="true">✳</span><strong>Small steps count.</strong><p>One word. One sentence.<br>A little more confidence.</p><span class="tiny">30-day English adventure</span></div>
+<a class="original" href="changelog.html" aria-current="page">What’s new</a>
+</aside>
+<div class="workspace">
+<header class="topbar"><span>What’s new</span><div><span class="app-badge">COURSE UPDATES</span><span class="avatar" aria-label="Learner">L</span></div></header>
+<main id="updates" tabindex="-1">
+<div class="page-heading"><div><p class="eyebrow">A LITTLE BETTER, EVERY DAY</p><h1>What’s new</h1><p class="muted">Small improvements for a clearer, calmer learning experience.</p></div><a class="subtle-link" href="index.html">← My dashboard</a></div>
+<section class="release-block" aria-labelledby="release-current">
+<div class="release-date"><time datetime="2026-10-16">16 October 2026</time><span class="release-badge">LATEST</span></div>
+<article class="release-card">
+<div class="release-heading"><span class="release-symbol" aria-hidden="true">✳</span><div><p class="eyebrow">YOUR LEARNING SPACE, REFINED</p><h2 id="release-current">More focus. More clarity.</h2></div></div>
+<div class="release-note"><h3>One day at a time</h3><p>Day 1 is ready to start. Mark a day complete in Lesson tools to unlock the next. Finished lessons stay available for review, and your saved records are kept. The same order applies to vocabulary practice and offline learning.</p></div>
+<div class="release-note"><h3>Clearer Chinese meanings</h3><p>Vocabulary meanings now use larger, darker text with more space between lines, across lessons, the word studio and your collection.</p></div>
+<div class="release-note"><h3>English throughout</h3><p>Navigation, instructions, grammar explanations, answer feedback, learning notes and download messages are in English. Chinese is kept only for vocabulary meanings.</p></div>
+<div class="release-note"><h3>Simpler answer checking</h3><p>Choice questions check your answer as soon as you select an option. Typed questions keep the Check answer button. Open Answer help when you want an answer or explanation.</p></div>
+<div class="release-note"><h3>Focused daily lessons</h3><p>All 30 lessons share the dashboard’s responsive design. Find goals, completion, course switching and parent notes under Lesson tools. Sources and downloads open on demand. Desktop lessons stay in place as you turn questions, preserving your position in shared passages. Long content scrolls within the practice sheet without visible scrollbars; phones keep natural page scrolling.</p></div>
+<div class="release-note"><h3>Smoother audio controls</h3><p>Recordings sit beside the lesson title, with no extra hint below. The player stays in place as you turn questions, avoiding a flashing line and keeping your place in the same recording.</p></div>
+<div class="release-note"><h3>A dashboard that helps you get started</h3><p>Continue your next lesson, see your 30-day progress or practise a short vocabulary round. Save words for later in the same searchable collection used throughout the course.</p></div>
+<div class="release-preserved"><span aria-hidden="true">✓</span><p>Your existing lesson progress, word marks and downloaded audio are kept. Everything you have saved remains available offline.</p></div>
 </article>
-<article class="install">
-<h2>改进：选择题自动核对</h2>
-<ul>
-<li>词汇、语法、阅读和听力选择题选完立即判题；改选后自动更新结果。</li>
-<li>支持键盘选择，保留 Check answer 按钮；填空题继续手动核对。</li>
-<li>答案和解析默认隐藏，翻页后保留已选答案。</li>
-</ul>
+</section>
+<section class="release-block release-previous" aria-labelledby="release-previous">
+<div class="release-date"><time datetime="2026-10-15">15 October 2026</time></div>
+<article class="release-card">
+<div class="release-heading"><span class="release-symbol quiet" aria-hidden="true">✓</span><div><p class="eyebrow">THE EVERYDAY DETAILS</p><h2 id="release-previous">Smoother practice, wherever you are.</h2></div></div>
+<div class="release-note"><h3>A personal word collection</h3><p>Save unfamiliar words from any lesson. Search words or meanings, filter by learning day, return to the original word card and remove marks when you are ready.</p></div>
+<div class="release-note"><h3>Choice labels that match the answers</h3><p>Options follow their displayed order: A, B, C and beyond. Your selection, feedback and answer explanation stay in sync.</p></div>
+<div class="release-note"><h3>More reliable offline updates</h3><p>Downloads verify files before saving and resume from where they stopped. Missing local files no longer block course updates. A new-version notice lets you choose when to refresh, keeping your saved records and audio.</p></div>
 </article>
-<article class="install">
-<h2>离线与验证</h2>
-<p>生词本、完整词条数据和本页均支持离线使用。已有的课程完成记录与下载音频会保留。</p>
-<p>已通过 30 天课程共 2,430 道客观题的交互回归，以及 2,100 道选择题的自动核对验证。Chrome 已验证生词保存、移除、搜索筛选、跨页同步、断网使用及平板/手机宽度；Safari/iPad 实机检查待完成。</p>
-<p>生词标记保存在当前浏览器，不会自动同步到其他设备或网站。清除网站数据会删除标记。</p>
-</article>
+</section>
+<div class="updates-actions"><a class="button primary" href="index.html">Back to learning →</a><a class="subtle-link" href="update.html">Check for updates ↗</a></div>
+<footer>Your progress and word collection are saved on this browser. They do not automatically sync between devices.</footer>
 </main>
-<footer><a href="index.html">返回课程首页</a> · A2 Key</footer>
-</body>
-</html>
+</div>
+</div>
+</body></html>

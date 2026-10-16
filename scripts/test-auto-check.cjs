@@ -24,6 +24,7 @@ const BASE = process.env.COURSE_TEST_URL || 'http://127.0.0.1:8765/';
     await page.locator('#prevSlide').click();
     assert.equal(await slide.locator('input[type=radio]:checked').inputValue(), selected, 'page arrows preserve answers');
     assert.equal(await slide.locator('.answer.show,.explanation.show').count(), 0, 'checking does not reveal answers or explanations');
+    await page.evaluate(()=>localStorage.setItem('a2-day-completed',JSON.stringify(Array.from({length:30},(_,i)=>i+1))));
     let questions = 0;
     for (let day = 1; day <= 30; day++) {
       await page.goto(BASE + `html/${day === 1 ? 'index' : 'day' + String(day).padStart(2, '0')}.html`);
