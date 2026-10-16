@@ -1,46 +1,33 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#f5f7ff"><title>A2 Key · Day 14</title>
-  <link rel="stylesheet" href="styles.css">
-<link rel="manifest" href="../manifest.webmanifest">
-<link rel="stylesheet" href="../word-review.css">
-<script src="../word-review.js" defer></script>
-<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="A2 Key">
-<script src="../register.js" defer></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f8f4"><title>A2 Key · Day 14</title>
+<link rel="manifest" href="../manifest.webmanifest"><link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../word-review.css"><link rel="stylesheet" href="../lesson.css">
+<script src="../course-access.js" defer></script><script src="../register.js" defer></script><script src="../word-review.js" defer></script><script src="../lesson.js" defer></script>
 </head>
-<body>
+<body class="lesson-loading">
 <a class="skip-link" href="#practice">Skip to practice</a>
-<header class="top">
-  <a class="brand" href="index.html" aria-label="A2 Key course home">
-    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M7 8h7l3 3 3-3h5v17h-6l-3 2-3-2H7V8Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 12v10M22 3v5M19.5 5.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-    <span>A2 Key <small>Little steps. Big progress.</small></span>
-  </a>
-  <details class="course-menu" id="courseMenu">
-    <summary id="courseToggle"><span class="menu-grid" aria-hidden="true">▦</span><span><small lang="zh-CN">我的课程</small><strong>Day 14 <span class="day-total">/ 30</span></strong></span><span class="chevron" aria-hidden="true">⌄</span></summary>
-    <section class="course-panel" aria-label="Choose a course day">
-      <div class="panel-heading"><div><p class="eyebrow">YOUR LEARNING JOURNEY</p><h2 lang="zh-CN">每天前进一小步</h2></div><span class="panel-count" id="courseProgress"></span></div>
-      <p class="panel-hint" lang="zh-CN">选择课程开始练习 · 带 ✓ 的课程已完成</p>
-      <nav class="day-nav" id="dayNav" aria-label="Course days"></nav>
-      <p class="panel-foot" lang="zh-CN">全部 30 天课程已开放。按自己的节奏学习就好。</p>
-    </section>
-  </details>
-  <div class="header-progress"><span class="progress-dot" aria-hidden="true"></span><span id="dayProgress"></span></div>
-  <label class="complete"><input id="done" type="checkbox"><span id="completionLabel" lang="zh-CN">标记完成</span></label>
-</header>
+<header class="lesson-header"><a class="brand" href="../index.html" aria-label="A2 Key dashboard"><span class="brand-mark" aria-hidden="true">a<span>2</span></span><span>A2 Key</span></a><a class="dashboard-link" href="../index.html">← Dashboard</a>
+<details class="course-menu" id="courseMenu"><summary id="courseToggle">Lesson tools <span aria-hidden="true">⌄</span></summary><div class="course-panel">
+<div class="tools-heading"><strong>Day 14 · Lesson tools</strong><span class="panel-count" id="courseProgress"></span></div>
+<label class="complete"><input id="done" type="checkbox"><span id="completionLabel" lang="en">Mark day complete</span></label>
+<p id="unlock-notice" class="unlock-notice" role="status"></p><a id="unlocked-next" class="tool-link" hidden></a>
+<a class="tool-link" data-word-review-link href="../word-review.html" lang="en">My word collection</a><a class="tool-link" href="../index.html#vocabulary">Word studio →</a><a class="tool-link" href="../index.html#downloads">Offline & downloads →</a>
+<details class="goals"><summary>Today’s goals</summary><p id="lessonGoal"></p><p class="lesson-facts"><span id="wordCount"></span><span id="grammarBadge"></span><span id="topicBadge"></span></p></details>
+<details class="extras"><summary>Notes & parent guide</summary><div id="extraContent"></div></details>
+<details class="change-day"><summary>Change lesson</summary><nav class="day-nav" id="dayNav" aria-label="Course days"></nav></details>
+<span id="dayProgress" hidden></span>
+</div></details></header>
+<section id="lesson-access" class="lesson-access" aria-labelledby="locked-title" hidden><div class="lesson-lock-card"><p class="eyebrow">ONE DAY AT A TIME</p><h1 id="locked-title">This lesson is locked</h1><p id="locked-description"></p><a class="locked-resume" id="locked-resume" href="index.html">Go to Day 01 →</a><a class="dashboard-link" href="../index.html">← My dashboard</a></div></section>
 <main id="practice" tabindex="-1">
-  <section class="hero">
-    <div class="lesson-heading"><span class="day-badge" aria-hidden="true"><small>DAY</small>14</span><div><p class="eyebrow">A LITTLE PRACTICE, EVERY DAY</p><h1 id="lessonTitle"></h1></div></div>
-    <div class="hero-meta"><div class="hero-chips"><span id="wordCount"></span><span id="grammarBadge"></span><span id="topicBadge"></span></div><details class="goals"><summary lang="zh-CN">今天学什么？ <span aria-hidden="true">↗</span></summary><p id="lessonGoal"></p></details></div>
-  </section>
-  <div class="deck-toolbar"><label class="section-select"><span lang="zh-CN">练习内容</span><select id="sectionPicker" aria-label="Choose a practice section"></select></label><a class="word-review-link" data-word-review-link href="../word-review.html" lang="zh-CN">我的生词本</a><span id="slideGroup" class="muted"></span><span class="shortcut"><kbd>←</kbd><kbd>→</kbd><span lang="zh-CN">也可以用方向键翻页</span></span></div>
-  <div class="deck-wrap"><div id="deck" class="deck" aria-live="polite"></div></div>
-  <nav class="turner" aria-label="Slide navigation"><button id="prevSlide" type="button"><span aria-hidden="true">←</span> Previous</button><div class="turner-center"><span id="slideCount"></span><progress id="slideProgress" max="1" value="0" aria-label="Lesson page progress"></progress></div><button id="nextSlide" type="button">Next <span aria-hidden="true">→</span></button></nav>
-  <div class="bottom-bar"><a href="../index.html" lang="zh-CN">离线下载与安装</a><details class="extras"><summary lang="zh-CN">学习笔记与家长指引 <span aria-hidden="true">↗</span></summary><div id="extraContent"></div></details><footer lang="zh-CN"><span aria-hidden="true">✓</span> 完成标记自动保存在此浏览器 · 支持离线学习</footer></div>
+<div class="lesson-heading"><div><p class="eyebrow">DAY 14 · YOUR ENGLISH PRACTICE</p><h1 id="lessonTitle"></h1></div></div>
+<div class="deck-toolbar"><label class="section-select"><span>Practice section</span><select id="sectionPicker" aria-label="Choose a practice section"></select></label><span id="sectionCount" class="section-count" role="status"></span><span id="slideGroup" hidden></span></div>
+<div class="deck-wrap"><div id="deck" class="deck" aria-live="polite"></div></div>
+<nav class="turner" aria-label="Slide navigation"><button id="prevSlide" type="button">← Previous</button><div class="turner-center"><span id="slideCount" hidden></span><span id="focusCount"></span><progress id="slideProgress" max="1" value="0" aria-label="Practice section progress"></progress></div><button id="nextSlide" type="button">Next →</button></nav>
+<p class="lesson-footnote">Take your time. One step at a time.</p>
+<noscript>Please enable JavaScript to use the lesson.</noscript>
 </main>
-<script defer src="app_day14.js"></script>
+<script type="application/json" id="lesson-entry" data-day="14" data-src="app_day14.js"></script>
 </body></html>

@@ -6,7 +6,7 @@
   let data,cache,downloading=false,cancelled=false,aborter,deferredInstall;
   const cards=new Map();
   function url(path){return new URL(path,ROOT).href;}
-  function connection(){$('connection').textContent=navigator.onLine?'Online · 在线':'Offline · 离线';}
+  function connection(){$('connection').textContent=navigator.onLine?'Online':'Offline';}
   async function verify(response,asset){
     const expected=new URL(url(asset.url)),final=response.url?new URL(response.url):expected;
     const cleanHTML=asset.kind==='shell'&&expected.pathname.endsWith('.html')&&final.pathname===expected.pathname.replace(/\/index\.html$/,'/').replace(/\.html$/,'');
@@ -28,20 +28,17 @@
     for(const day of data.days){
       const saved=await status(day),card=cards.get(day.day);if(saved.ready)complete++;
       card.root.classList.toggle('ready',saved.ready);
-      card.status.textContent=saved.ready?'Audio ready offline · 音频已下载':saved.count?`Partly saved · ${saved.count} / ${day.assets.length} files`:`Audio: ${(day.bytes/1000000).toFixed(1)} MB · 未下载`;
+      card.status.textContent=saved.ready?'Audio ready offline':saved.count?`Partly saved · ${saved.count} / ${day.assets.length} files`:`Audio: ${(day.bytes/1000000).toFixed(1)} MB · Not downloaded`;
       card.button.disabled=downloading||saved.ready;
       card.button.textContent=saved.ready?'Saved ✓':'Download audio';
     }
     $('download-all').disabled=downloading||complete===30;
-    if(!downloading)$('download-status').textContent=`${complete} / 30 days ready offline${complete===30?' · 全部课程与音频已保存':''}`;
+    if(!downloading)$('download-status').textContent=`${complete} / 30 days ready offline${complete===30?' · All lessons and audio saved':''}`;
     $('download-progress').max=30;$('download-progress').value=complete;
     return complete;
   }
   function render(){
-    const completed=JSON.parse(localStorage.getItem('a2-day-completed')||'[]');
-    $('completed').textContent=`${new Set(completed).size} / 30 days completed`;
-    const next=data.days.find(d=>!completed.includes(d.day))||data.days[0];
-    $('continue').href=next.page;$('continue').textContent=`Continue · Day ${String(next.day).padStart(2,'0')} →`;
+    let completed=[];try{const saved=JSON.parse(localStorage.getItem('a2-day-completed')||'[]');if(Array.isArray(saved))completed=saved;}catch{/* Course content stays available if progress storage is unavailable. */}
     for(const day of data.days){
       const card=document.createElement('article');card.className='day-card';
       const number=document.createElement('div');number.className='day-number';number.textContent=`DAY ${String(day.day).padStart(2,'0')}${completed.includes(day.day)?' · ✓ COMPLETED':''}`;
@@ -50,7 +47,7 @@
       const actions=document.createElement('div');actions.className='actions';
       const link=document.createElement('a');link.className='lesson-link';link.href=day.page;link.textContent='Open lesson →';
       const button=document.createElement('button');button.type='button';button.disabled=true;button.textContent='Download audio';button.addEventListener('click',()=>download([day]));
-      actions.append(link,button);card.append(number,title,state,actions);$('day-grid').append(card);cards.set(day.day,{root:card,status:state,button});
+      actions.append(link,button);card.append(number,title,state,actions);$('download-grid').append(card);cards.set(day.day,{root:card,status:state,button});
     }
   }
   async function download(days){
@@ -84,7 +81,7 @@
   }
   async function initialize(){
     connection();
-    if(!('serviceWorker' in navigator)||!window.isSecureContext){$('setup-status').textContent='Offline installation needs this course’s HTTPS address in Safari.';return;}
+    if(!('serviceWorker' in navigator)||!window.isSecureContext){$('setup-status').textContent='Offline setup needs a supported browser and the course’s HTTPS address.';return;}
     try{
       await navigator.serviceWorker.register(url('sw.js'),{scope:ROOT.pathname,updateViaCache:'none'});
       // Ready resolves only when all lesson text files have been saved successfully.
@@ -100,7 +97,7 @@
           await verify(restored,asset);await shell.put(url(asset.url),restored);
         }
       }
-      $('setup-status').textContent='All 30 lesson texts are ready offline · 课程文字已保存';
+      $('setup-status').textContent='All 30 lesson texts are ready offline';
       $('download-size').textContent=Math.ceil(data.total_audio_bytes/1000000);
       render();await refresh();
       $('download-all').addEventListener('click',()=>download(data.days));

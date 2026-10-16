@@ -1,7 +1,7 @@
 /* Cache the course, personal word review and automatic choice checking; audio downloads are user initiated. */
 const SHELL_PREFIX='a2-ipad-shell-';
 // Updated by build.py so every shell release triggers a browser update check.
-const BUILD_VERSION='ee9bf8ebf4ce85ec';
+const BUILD_VERSION='a5b99f61929cf1d7';
 const META='a2-ipad-metadata-v1';
 const MEDIA='a2-ipad-media-v1';
 const ROOT=new URL('./',self.registration.scope);

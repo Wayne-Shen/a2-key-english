@@ -7,13 +7,13 @@
       const notice = document.createElement('div');
       notice.id = 'course-update-notice';
       notice.setAttribute('role', 'status');
-      notice.setAttribute('lang', 'zh-CN');
+      notice.setAttribute('lang', 'en');
       notice.style.cssText = 'position:fixed;bottom:max(16px,env(safe-area-inset-bottom));left:16px;right:16px;z-index:1000;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;padding:14px 18px;background:#fff;border:1px solid #b7c8f2;border-radius:16px;box-shadow:0 8px 32px #24325233;font:14px/1.6 system-ui;color:#26344b';
       const text = document.createElement('span');
-      text.textContent = '新版已准备好，刷新后即可使用。学习记录和已下载音频会保留。';
+      text.textContent = 'An update is ready. Refresh to use it. Your progress and downloaded audio will be kept.';
       const button = document.createElement('button');
       button.type = 'button';
-      button.textContent = '刷新使用新版';
+      button.textContent = 'Refresh to update';
       button.style.cssText = 'min-height:44px;padding:10px 16px;background:#3455dc;color:white;border:0;border-radius:10px;font:inherit;cursor:pointer';
       button.onclick = () => location.reload();
       notice.append(text, button);
